@@ -64,6 +64,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 lastTrainedAt={model.last_trained_at}
                 updatedAt={model.updated_at}
                 status={model.status}
+                projectId={id}
               />
             ))}
             <CreateModelCard projectId={id} />

@@ -27,6 +27,7 @@ interface ModelCardProps {
   lastTrainedAt: string | null;
   updatedAt: string;
   status: 'draft' | 'training' | 'ready' | 'failed';
+  projectId: string;
 }
 
 export function ModelCard({ 
@@ -38,10 +39,11 @@ export function ModelCard({
   outputHeight,
   lastTrainedAt,
   updatedAt,
-  status
+  status,
+  projectId
 }: ModelCardProps) {
   return (
-    <Link href={`/dashboard/models/${id}`} className="block">
+    <Link href={`/projects/${projectId}/models/${id}`} className="block">
       <div className="bg-black rounded-lg border border-gray-800 hover:border-gray-700 transition-colors p-6 min-h-[200px] flex flex-col cursor-pointer">
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-3">
@@ -52,11 +54,11 @@ export function ModelCard({
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </span>
         </div>
-        <p className="text-sm text-gray-400 mt-4 line-clamp-2">{description}</p>
+        <p className="text-sm text-gray-400 mt-4 line-clamp-2">{description || 'No description'}</p>
         <div className="mt-4 space-y-2">
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">Trigger:</span>
-            <span className="text-xs text-gray-300">{triggerWord}</span>
+            <span className="text-xs font-mono text-[#33bbff] bg-[#27272a] px-2 py-1">{triggerWord}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">Dimensions:</span>
