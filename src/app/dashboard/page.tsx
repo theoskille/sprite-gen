@@ -38,6 +38,7 @@ export default async function DashboardPage() {
                 key={project.id}
                 id={project.id}
                 name={project.name}
+                description={project.description}
                 modelCount={project.model_count}
                 updatedAt={project.updated_at}
               />

@@ -12,6 +12,7 @@ interface ProjectWithModels extends Project {
   models: {
     id: string;
     name: string;
+    description: string | null;
     created_at: string;
     updated_at: string;
   }[];
@@ -49,6 +50,7 @@ export async function getProject(id: string): Promise<ProjectWithModels | null> 
       models:models(
         id,
         name,
+        description,
         created_at,
         updated_at
       )

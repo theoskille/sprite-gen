@@ -5,11 +5,12 @@ import { Folder } from 'lucide-react';
 interface ProjectCardProps {
   id: string;
   name: string;
+  description: string | null;
   modelCount: number;
   updatedAt: string;
 }
 
-export function ProjectCard({ id, name, modelCount, updatedAt }: ProjectCardProps) {
+export function ProjectCard({ id, name, description, modelCount, updatedAt }: ProjectCardProps) {
   return (
     <Link href={`/projects/${id}`}>
       <div className="bg-black rounded-lg border border-gray-800 hover:border-gray-700 transition-colors p-6 min-h-[200px] flex flex-col">
@@ -20,7 +21,8 @@ export function ProjectCard({ id, name, modelCount, updatedAt }: ProjectCardProp
           </div>
           <span className="text-sm text-gray-400 bg-[#27272a] px-2 py-1">{modelCount} models</span>
         </div>
-        <p className="text-sm text-gray-400 mt-4">
+        <p className="text-sm text-gray-400 mt-4 line-clamp-2">{description || 'No description'}</p>
+        <p className="text-sm text-gray-400 mt-auto">
           Updated {formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}
         </p>
       </div>
