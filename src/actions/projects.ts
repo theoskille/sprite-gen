@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { Project } from '@/types/database';
+import { Project, Model } from '@/types/database';
 import { redirect } from 'next/navigation';
 
 interface ProjectWithModelCount extends Project {
@@ -9,13 +9,7 @@ interface ProjectWithModelCount extends Project {
 }
 
 interface ProjectWithModels extends Project {
-  models: {
-    id: string;
-    name: string;
-    description: string | null;
-    created_at: string;
-    updated_at: string;
-  }[];
+  models: Model[];
 }
 
 export async function getProjects(): Promise<ProjectWithModelCount[]> {
@@ -47,13 +41,7 @@ export async function getProject(id: string): Promise<ProjectWithModels | null> 
     .from('projects')
     .select(`
       *,
-      models:models(
-        id,
-        name,
-        description,
-        created_at,
-        updated_at
-      )
+      models:models(*)
     `)
     .eq('id', id)
     .single();

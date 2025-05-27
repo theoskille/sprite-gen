@@ -4,6 +4,8 @@ import { ModelCard } from '@/components/dashboard/ModelCard';
 import { CreateModelCard } from '@/components/dashboard/CreateModelCard';
 import { getProject } from '@/actions/projects';
 import { BackButton } from '@/components/ui/BackButton';
+import { Calendar } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 interface ProjectPageProps {
   params: {
@@ -33,7 +35,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <BackButton href="/dashboard" />
-              <h1 className="text-3xl font-bold text-white">{project.name}</h1>
+              <div>
+                <h1 className="text-3xl font-bold text-white">{project.name}</h1>
+                <p className="mt-2 text-sm text-gray-400">{project.description || 'No description'}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <Calendar className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm text-gray-400">
+                    Created {formatDistanceToNow(new Date(project.created_at), { addSuffix: true })}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -52,6 +63,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 outputHeight={model.output_height}
                 lastTrainedAt={model.last_trained_at}
                 updatedAt={model.updated_at}
+                status={model.status}
               />
             ))}
             <CreateModelCard projectId={id} />
