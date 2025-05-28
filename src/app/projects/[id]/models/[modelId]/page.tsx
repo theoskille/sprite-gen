@@ -2,9 +2,10 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getProject } from '@/actions/projects';
 import { BackButton } from '@/components/ui/BackButton';
-import { Bot, Calendar, Upload, Image } from 'lucide-react';
+import { Bot, Calendar } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Tabs } from '@/components/ui/Tabs';
+import TrainInterface from './TrainInterface';
 
 function getStatusColor(status: string) {
   switch (status) {
@@ -36,7 +37,7 @@ export default async function ModelPage({ params }: ModelPageProps) {
     redirect('/auth/login');
   }
 
-  const { id, modelId } = params;
+  const { id, modelId } = await params;
   const project = await getProject(id);
 
   if (!project) {
@@ -52,41 +53,7 @@ export default async function ModelPage({ params }: ModelPageProps) {
     {
       id: 'train',
       label: 'Train',
-      content: (
-        <div className="grid grid-cols-2 gap-8">
-          {/* Upload Section */}
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Upload className="w-5 h-5 text-[#33bbff]" />
-              <h2 className="text-lg font-medium text-white">Training Images</h2>
-            </div>
-            <p className="text-sm text-gray-400 mb-4">Upload images to train your model. More images = better results.</p>
-            <div className="bg-[#27272a] rounded-lg p-6 border border-[#3f3f46] h-[400px]">
-              <div className="flex flex-col items-center justify-center gap-4 h-full">
-                <div className="w-12 h-12 rounded-full bg-[#18181b] flex items-center justify-center">
-                  <Image className="w-6 h-6 text-gray-400" />
-                </div>
-                <div className="text-center">
-                  <p className="text-sm text-gray-300">Drag and drop your images here</p>
-                  <p className="text-sm text-gray-500 mt-1">or click to browse</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Training Set Section */}
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Image className="w-5 h-5 text-[#33bbff]" />
-              <h2 className="text-lg font-medium text-white">Current Training Set</h2>
-            </div>
-            <p className="text-sm text-gray-400 mb-4">Images currently used for training</p>
-            <div className="bg-[#27272a] rounded-lg p-6 border border-[#3f3f46] h-[400px]">
-              <p className="text-gray-400">No training images uploaded yet.</p>
-            </div>
-          </div>
-        </div>
-      ),
+      content: <TrainInterface projectId={id} modelId={modelId} />,
     },
     {
       id: 'generate',
