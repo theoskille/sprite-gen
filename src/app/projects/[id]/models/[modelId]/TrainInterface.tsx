@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Upload, Image, X } from 'lucide-react';
+import { Upload, Image, X, Trash2 } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
-import { uploadImageToStorage, getModelImages, getImageFromStorage } from '@/actions/training';
+import { uploadImageToStorage, getModelImages, getImageFromStorage, deleteTrainingImage } from '@/actions/training';
 
 interface TrainingImage {
   id: string;
@@ -22,6 +22,7 @@ export default function TrainInterface({ projectId, modelId }: TrainInterfacePro
   const [images, setImages] = useState<TrainingImage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Fetch existing training images
   useEffect(() => {
@@ -63,6 +64,18 @@ export default function TrainInterface({ projectId, modelId }: TrainInterfacePro
 
     fetchImages();
   }, [projectId, modelId]);
+
+  const handleDelete = async (imageId: string, filePath: string) => {
+    try {
+      setDeletingId(imageId);
+      await deleteTrainingImage(imageId, filePath);
+      setImages(prev => prev.filter(img => img.id !== imageId));
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setIsUploading(true);
@@ -182,6 +195,19 @@ export default function TrainInterface({ projectId, modelId }: TrainInterfacePro
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded">
                       <X className="w-6 h-6 text-red-500" />
                     </div>
+                  )}
+                  {image.status === 'uploaded' && (
+                    <button
+                      onClick={() => handleDelete(image.id, image.url)}
+                      disabled={deletingId === image.id}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500/90 hover:bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-50"
+                    >
+                      {deletingId === image.id ? (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </button>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/50 text-white text-xs truncate rounded-b">
                     {image.name}

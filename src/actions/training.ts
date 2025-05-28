@@ -107,5 +107,31 @@ export async function getImageFromStorage(filePath: string) {
     console.error('Error fetching image:', error)
     throw new Error('Failed to fetch image')
   }
+}
+
+export async function deleteTrainingImage(imageId: string, filePath: string) {
+  const supabase = await createClient()
+  
+  try {
+    // Delete from storage
+    const { error: storageError } = await supabase.storage
+      .from('training-images')
+      .remove([filePath])
+
+    if (storageError) throw storageError
+
+    // Delete from database
+    const { error: dbError } = await supabase
+      .from('uploads')
+      .delete()
+      .eq('id', imageId)
+
+    if (dbError) throw dbError
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error deleting training image:', error)
+    throw new Error('Failed to delete image')
+  }
 } 
 
